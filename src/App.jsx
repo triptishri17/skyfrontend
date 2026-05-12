@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 
 import { motion, AnimatePresence } from "framer-motion";
+import Loader from "./components/Loader";
 
 const DEFAULT_CITY = "London";
 
@@ -340,36 +341,8 @@ export default function App() {
         </AnimatePresence>
 
         <AnimatePresence mode="wait">
-          {loading && (
-            <motion.div
-              key="loading"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="flex min-h-[48vh] flex-col items-center justify-center px-4"
-            >
-              <div
-                className={`relative flex h-36 w-36 items-center justify-center rounded-3xl border backdrop-blur-2xl ${isDark ? "border-white/10 bg-white/5" : "border-slate-300/30 bg-[#f8fafc]/90 shadow-lg"}`}
-              >
-                <div className="absolute inset-3 rounded-2xl border-2 border-cyan-400/15" />
-                <div className="absolute inset-3 rounded-2xl border-2 border-t-cyan-400 border-r-transparent border-b-transparent border-l-transparent animate-spin" />
-                <Cloud
-                  className={`relative h-11 w-11 ${isDark ? "text-cyan-400" : "text-blue-600"} animate-pulse`}
-                />
-              </div>
-              <p
-                className={`mt-8 text-xs font-black uppercase tracking-[0.35em] ${isDark ? "text-cyan-300/90" : "text-blue-700"}`}
-              >
-                Syncing atmosphere…
-              </p>
-              <p
-                className={`mt-2 text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}
-              >
-                Fetching live conditions for you
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
+  {loading && <Loader isDark={isDark} />}
+</AnimatePresence>
 
         {!loading && error && (
           <motion.div
