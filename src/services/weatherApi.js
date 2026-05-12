@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL || 'https://skybackend-ivc5.onrender.com/api/weather';
+
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api/weather',
+  baseURL: API_URL,
 });
 
 const buildQuery = (location) => {
