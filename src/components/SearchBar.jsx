@@ -2,10 +2,26 @@ import { useState } from "react";
 import { Search, MapPin, LocateFixed, LoaderCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
-const SearchBar = ({ onSearch, onUseCurrentLocation, locating, isDark }) => {
+const DEFAULT_TRENDING = [
+  "London",
+  "Tokyo",
+  "New York",
+  "Paris",
+  "Dubai",
+];
+
+const SearchBar = ({
+  onSearch,
+  onUseCurrentLocation,
+  locating,
+  isDark,
+  nearbyCities = [],
+}) => {
   const [city, setCity] = useState("");
 
-  const trendingCities = ["London", "Tokyo", "New York", "Paris", "Dubai"];
+  const hasNearby = Array.isArray(nearbyCities) && nearbyCities.length > 0;
+  const chipCities = hasNearby ? nearbyCities : DEFAULT_TRENDING;
+  const chipsLabel = hasNearby ? "Nearby" : "Trending";
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -79,11 +95,11 @@ const SearchBar = ({ onSearch, onUseCurrentLocation, locating, isDark }) => {
 
       <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 mt-6">
         <span className={`text-[10px] font-black uppercase tracking-widest flex items-center gap-1 ${trendingLabel}`}>
-          <MapPin className="w-3 h-3" /> Trending
+          <MapPin className="w-3 h-3" /> {chipsLabel}
         </span>
-        {trendingCities.map((name) => (
+        {chipCities.map((name, idx) => (
           <motion.button
-            key={name}
+            key={`${name}-${idx}`}
             type="button"
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.97 }}

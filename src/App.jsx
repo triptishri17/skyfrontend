@@ -9,6 +9,7 @@ import {
 import SearchBar from "./components/SearchBar";
 import WeatherPage from "./components/WeatherPage";
 import { useWeather } from "./hooks/useWeather";
+import { findCitiesByCoords } from "./services/weatherApi";
 
 import {
   Cloud,
@@ -49,6 +50,7 @@ export default function App() {
 
   const [locationMessage, setLocationMessage] = useState("");
   const [locating, setLocating] = useState(false);
+  const [nearbyCities, setNearbyCities] = useState([]);
 
   const watchIdRef = useRef(null);
 
@@ -86,6 +88,7 @@ export default function App() {
 
   const requestCurrentLocation = useCallback(() => {
     if (!navigator.geolocation) {
+      setNearbyCities([]);
       fetchWeather(DEFAULT_CITY);
       return;
     }
@@ -103,10 +106,25 @@ export default function App() {
         try {
           await fetchWeatherByCoords(coords);
 
+          try {
+            const findData = await findCitiesByCoords({
+              lat: coords.lat,
+              lon: coords.lon,
+              cnt: 5,
+            });
+            const names = (findData?.list ?? [])
+              .map((item) => item?.name)
+              .filter(Boolean);
+            setNearbyCities([...new Set(names)]);
+          } catch {
+            setNearbyCities([]);
+          }
+
           setLocationMessage(
             "Showing weather for your current location."
           );
         } catch {
+          setNearbyCities([]);
           fetchWeather(DEFAULT_CITY);
         } finally {
           setLocating(false);
@@ -115,6 +133,7 @@ export default function App() {
 
       async () => {
         setLocating(false);
+        setNearbyCities([]);
 
         setLocationMessage(
           "Location denied. Showing London. You can search or use location anytime."
@@ -129,7 +148,7 @@ export default function App() {
         maximumAge: 300000,
       }
     );
-  }, [fetchWeather, fetchWeatherByCoords]);
+  }, [fetchWeather, fetchWeatherByCoords, findCitiesByCoords]);
 
   const toggleTheme = () => {
     setTheme((prev) =>
@@ -299,6 +318,7 @@ export default function App() {
             onUseCurrentLocation={requestCurrentLocation}
             locating={locating}
             isDark={isDark}
+            nearbyCities={nearbyCities}
           />
         </div>
 

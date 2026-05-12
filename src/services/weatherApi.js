@@ -23,3 +23,11 @@ export const getForecast = async (location) => {
   const response = await api.get('/forecast', { params: buildQuery(location) });
   return response.data;
 };
+
+/** Nearby cities from coordinates (OpenWeather find API) */
+export const findCitiesByCoords = async ({ lat, lon, cnt = 5 }) => {
+  const response = await api.get('/find', {
+    params: { lat, lon, cnt, units: 'metric' },
+  });
+  return response.data;
+};
