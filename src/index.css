@@ -15,6 +15,29 @@
     box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   }
 
+  /* Premium app shell — never flat white in light mode */
+  .app-shell-dark {
+    background: linear-gradient(165deg, #0f172a 0%, #111827 45%, #0c1222 100%);
+  }
+
+  .app-shell-light {
+    background: linear-gradient(165deg, #dbeafe 0%, #e0f2fe 42%, #f0f9ff 100%);
+  }
+
+  .app-card-dark {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  }
+
+  .app-card-light {
+    background: rgba(248, 250, 252, 0.88);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 20px 40px -16px rgba(15, 23, 42, 0.08);
+  }
+
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
@@ -40,6 +63,18 @@
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.38);
+  }
+
+  html:not(.dark) .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(148, 163, 184, 0.12);
+  }
+
+  html:not(.dark) .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(100, 116, 139, 0.35);
+  }
+
+  html:not(.dark) .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(71, 85, 105, 0.45);
   }
 }
 
@@ -69,4 +104,12 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.4);
+}
+
+html:not(.dark) ::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.35);
+}
+
+html:not(.dark) ::-webkit-scrollbar-thumb:hover {
+  background: rgba(71, 85, 105, 0.5);
 }

@@ -33,18 +33,12 @@ export default function App() {
     fetchWeatherByCoords,
   } = useWeather();
 
-  // ==============================
-  // THEME
-  // ==============================
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("theme") || "dark";
   });
 
   const isDark = theme === "dark";
 
-  // ==============================
-  // FAVORITES
-  // ==============================
   const [favorites, setFavorites] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("weatherFavorites")) || [];
@@ -53,17 +47,11 @@ export default function App() {
     }
   });
 
-  // ==============================
-  // LOCATION
-  // ==============================
   const [locationMessage, setLocationMessage] = useState("");
   const [locating, setLocating] = useState(false);
 
   const watchIdRef = useRef(null);
 
-  // ==============================
-  // SAVE THEME
-  // ==============================
   useEffect(() => {
     localStorage.setItem("theme", theme);
 
@@ -74,9 +62,6 @@ export default function App() {
     }
   }, [theme]);
 
-  // ==============================
-  // SAVE FAVORITES
-  // ==============================
   useEffect(() => {
     localStorage.setItem(
       "weatherFavorites",
@@ -84,9 +69,6 @@ export default function App() {
     );
   }, [favorites]);
 
-  // ==============================
-  // INITIAL WEATHER LOAD
-  // ==============================
   useEffect(() => {
     requestCurrentLocation();
 
@@ -102,9 +84,6 @@ export default function App() {
     };
   }, []);
 
-  // ==============================
-  // GET CURRENT LOCATION WEATHER
-  // ==============================
   const requestCurrentLocation = useCallback(() => {
     if (!navigator.geolocation) {
       fetchWeather(DEFAULT_CITY);
@@ -127,7 +106,7 @@ export default function App() {
           setLocationMessage(
             "Showing weather for your current location."
           );
-        } catch (err) {
+        } catch {
           fetchWeather(DEFAULT_CITY);
         } finally {
           setLocating(false);
@@ -138,7 +117,7 @@ export default function App() {
         setLocating(false);
 
         setLocationMessage(
-          "Location denied. Showing London weather."
+          "Location denied. Showing London. You can search or use location anytime."
         );
 
         await fetchWeather(DEFAULT_CITY);
@@ -152,18 +131,12 @@ export default function App() {
     );
   }, [fetchWeather, fetchWeatherByCoords]);
 
-  // ==============================
-  // TOGGLE THEME
-  // ==============================
   const toggleTheme = () => {
     setTheme((prev) =>
       prev === "dark" ? "light" : "dark"
     );
   };
 
-  // ==============================
-  // FAVORITE TOGGLE
-  // ==============================
   const handleToggleFavorite = (city) => {
     setFavorites((prev) => {
       if (prev.includes(city)) {
@@ -174,235 +147,223 @@ export default function App() {
     });
   };
 
-  // ==============================
-  // IS FAVORITE
-  // ==============================
   const isFavorite = useMemo(() => {
     if (!weatherData) return false;
 
     return favorites.includes(weatherData.name);
   }, [favorites, weatherData]);
 
-  // ==============================
-  // BACKGROUND
-  // ==============================
-  const dynamicBackground = useMemo(() => {
+  /** Subtle weather tint — never pure white; stacks on sky gradient */
+  const weatherTint = useMemo(() => {
     if (!weatherData) {
       return isDark
-        ? "from-slate-950 via-slate-900 to-black"
-        : "from-blue-100 via-white to-slate-200";
+        ? "bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-600/5"
+        : "bg-gradient-to-br from-sky-400/12 via-transparent to-blue-400/10";
     }
 
-    const weather =
-      weatherData.weather?.[0]?.main?.toLowerCase();
+    const w =
+      weatherData.weather?.[0]?.main?.toLowerCase() || "";
 
-    if (weather?.includes("clear")) {
+    if (w.includes("clear")) {
       return isDark
-        ? "from-blue-950 via-slate-900 to-black"
-        : "from-sky-200 via-blue-100 to-yellow-50";
+        ? "bg-gradient-to-tr from-amber-500/10 via-transparent to-cyan-500/10"
+        : "bg-gradient-to-tr from-amber-300/20 via-sky-200/15 to-blue-200/20";
     }
-
-    if (weather?.includes("cloud")) {
+    if (w.includes("cloud")) {
       return isDark
-        ? "from-slate-900 via-gray-900 to-black"
-        : "from-slate-300 via-gray-100 to-white";
+        ? "bg-gradient-to-br from-slate-400/8 via-transparent to-slate-600/10"
+        : "bg-gradient-to-br from-slate-400/15 via-sky-100/20 to-slate-300/15";
     }
-
-    if (
-      weather?.includes("rain") ||
-      weather?.includes("drizzle")
-    ) {
+    if (w.includes("rain") || w.includes("drizzle")) {
       return isDark
-        ? "from-slate-950 via-blue-950 to-black"
-        : "from-blue-200 via-slate-100 to-gray-200";
+        ? "bg-gradient-to-br from-blue-600/12 via-transparent to-slate-900/20"
+        : "bg-gradient-to-br from-blue-400/18 via-sky-200/20 to-slate-300/12";
     }
-
-    if (weather?.includes("snow")) {
+    if (w.includes("snow")) {
       return isDark
-        ? "from-slate-800 via-blue-950 to-black"
-        : "from-white via-blue-50 to-slate-200";
+        ? "bg-gradient-to-br from-cyan-400/10 via-transparent to-slate-800/15"
+        : "bg-gradient-to-br from-cyan-200/25 via-sky-100/25 to-slate-200/15";
     }
-
-    if (weather?.includes("thunderstorm")) {
+    if (w.includes("thunderstorm")) {
       return isDark
-        ? "from-black via-purple-950 to-slate-950"
-        : "from-gray-400 via-slate-200 to-white";
+        ? "bg-gradient-to-br from-violet-600/15 via-transparent to-slate-950/25"
+        : "bg-gradient-to-br from-violet-300/20 via-slate-200/15 to-blue-200/15";
     }
 
     return isDark
-      ? "from-slate-950 via-slate-900 to-black"
-      : "from-blue-100 via-white to-slate-100";
+      ? "bg-gradient-to-br from-cyan-500/6 via-transparent to-blue-700/8"
+      : "bg-gradient-to-br from-sky-300/14 via-transparent to-blue-300/12";
   }, [weatherData, isDark]);
+
+  const shellClass = isDark ? "app-shell-dark" : "app-shell-light";
+  const headerCard = isDark ? "app-card-dark" : "app-card-light";
 
   return (
     <div
-      className={`min-h-screen bg-gradient-to-br ${dynamicBackground} transition-all duration-700`}
+      className={`relative min-h-screen overflow-x-hidden transition-colors duration-700 ${shellClass} ${isDark ? "text-slate-100" : "text-slate-800"}`}
     >
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* ===================================== */}
-        {/* HEADER */}
-        {/* ===================================== */}
+      {/* Animated ambient glow */}
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <motion.div
+          className={`absolute -top-40 -right-32 h-[28rem] w-[28rem] rounded-full blur-[120px] ${isDark ? "bg-cyan-500/25" : "bg-sky-400/35"}`}
+          animate={{ opacity: [0.35, 0.55, 0.35], scale: [1, 1.08, 1] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className={`absolute -bottom-32 -left-24 h-[26rem] w-[26rem] rounded-full blur-[110px] ${isDark ? "bg-blue-600/20" : "bg-blue-400/25"}`}
+          animate={{ opacity: [0.25, 0.45, 0.25], scale: [1.05, 1, 1.05] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        />
+        <motion.div
+          className={`absolute top-1/2 left-1/2 h-[22rem] w-[22rem] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[100px] ${isDark ? "bg-indigo-500/15" : "bg-cyan-300/20"}`}
+          animate={{ opacity: [0.2, 0.38, 0.2] }}
+          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </div>
 
-        <header className="flex flex-col lg:flex-row items-center justify-between gap-6 mb-10">
-          {/* LOGO */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-4"
-          >
-            <div className="p-3 rounded-3xl bg-cyan-500/20 backdrop-blur-xl border border-cyan-400/20">
-              <Cloud className="w-8 h-8 text-cyan-400" />
-            </div>
+      <div
+        className={`pointer-events-none fixed inset-0 -z-10 transition-opacity duration-700 ${weatherTint}`}
+        aria-hidden
+      />
 
-            <div>
-              <h1 className="text-4xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                SKYCAST
-              </h1>
-
-              <p
-                className={`text-sm ${
-                  isDark
-                    ? "text-white/50"
-                    : "text-slate-600"
-                }`}
-              >
-                Smart Weather Dashboard
-              </p>
-            </div>
-          </motion.div>
-
-          {/* ACTIONS */}
-          <div className="flex items-center gap-4">
-            {/* FAVORITE CITIES */}
-            <div className="hidden md:flex items-center gap-3">
-              {favorites.slice(0, 3).map((city) => (
-                <motion.button
-                  key={city}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => fetchWeather(city)}
-                  className={`px-4 py-2 rounded-2xl border backdrop-blur-xl text-sm font-semibold flex items-center gap-2 transition-all ${
-                    isDark
-                      ? "bg-white/5 border-white/10 text-white/80 hover:bg-white/10"
-                      : "bg-white/60 border-slate-200 text-slate-700 hover:bg-white"
-                  }`}
-                >
-                  <MapPin size={15} />
-                  {city}
-                </motion.button>
-              ))}
-            </div>
-
-            {/* THEME BUTTON */}
-            <motion.button
-              whileHover={{ scale: 1.08, rotate: 12 }}
-              whileTap={{ scale: 0.92 }}
-              onClick={toggleTheme}
-              className={`p-4 rounded-2xl backdrop-blur-xl border transition-all ${
-                isDark
-                  ? "bg-white/10 border-white/10"
-                  : "bg-white/70 border-slate-200"
-              }`}
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-6 md:py-10">
+        <header
+          className={`mb-8 md:mb-10 rounded-3xl border p-4 md:p-5 ${headerCard}`}
+        >
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+            <motion.div
+              initial={{ opacity: 0, x: -24 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-4"
             >
-              {isDark ? (
-                <Sun className="w-5 h-5 text-yellow-400" />
-              ) : (
-                <Moon className="w-5 h-5 text-blue-700" />
+              <div
+                className={`rounded-2xl border p-3 backdrop-blur-xl ${isDark ? "border-cyan-400/25 bg-cyan-500/15" : "border-blue-500/20 bg-blue-500/10"}`}
+              >
+                <Cloud
+                  className={`h-8 w-8 md:h-9 md:w-9 ${isDark ? "text-cyan-400" : "text-blue-600"}`}
+                />
+              </div>
+              <div>
+                <h1
+                  className={`text-3xl font-black tracking-tight md:text-4xl ${isDark ? "bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent" : "bg-gradient-to-r from-blue-700 to-cyan-600 bg-clip-text text-transparent"}`}
+                >
+                  SKYCAST
+                </h1>
+                <p
+                  className={`mt-0.5 text-sm font-medium ${isDark ? "text-slate-300" : "text-slate-600"}`}
+                >
+                  Premium weather dashboard
+                </p>
+              </div>
+            </motion.div>
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+              {favorites.length > 0 && (
+                <div className="flex flex-wrap items-center gap-2">
+                  {favorites.slice(0, 5).map((city) => (
+                    <motion.button
+                      key={city}
+                      type="button"
+                      whileHover={{ scale: 1.03, y: -1 }}
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => fetchWeather(city)}
+                      className={`inline-flex items-center gap-1.5 rounded-2xl border px-3 py-2 text-xs font-semibold backdrop-blur-xl transition-all md:text-sm ${isDark ? "border-white/10 bg-white/5 text-slate-200 hover:border-cyan-400/30 hover:bg-white/10" : "border-slate-300/35 bg-[#eef4ff]/80 text-slate-800 hover:border-blue-400/35 hover:bg-[#e0e7ff]/90"}`}
+                    >
+                      <MapPin size={14} className="opacity-70" />
+                      {city}
+                    </motion.button>
+                  ))}
+                </div>
               )}
-            </motion.button>
+
+              <motion.button
+                type="button"
+                whileHover={{ scale: 1.06, rotate: 8 }}
+                whileTap={{ scale: 0.94 }}
+                onClick={toggleTheme}
+                className={`self-start rounded-2xl border p-3.5 backdrop-blur-xl transition-all sm:self-center ${isDark ? "border-white/10 bg-white/8 text-amber-300" : "border-slate-300/40 bg-[#f8fafc]/90 text-blue-700 shadow-sm"}`}
+              >
+                {isDark ? (
+                  <Sun className="h-5 w-5" />
+                ) : (
+                  <Moon className="h-5 w-5" />
+                )}
+              </motion.button>
+            </div>
           </div>
         </header>
 
-        {/* ===================================== */}
-        {/* SEARCH */}
-        {/* ===================================== */}
-
-        <div className="max-w-3xl mx-auto mb-8">
+        <div className="mx-auto mb-6 max-w-3xl md:mb-8">
           <SearchBar
             onSearch={fetchWeather}
             onUseCurrentLocation={requestCurrentLocation}
             locating={locating}
+            isDark={isDark}
           />
         </div>
-
-        {/* ===================================== */}
-        {/* LOCATION MESSAGE */}
-        {/* ===================================== */}
 
         <AnimatePresence>
           {locationMessage && (
             <motion.div
-              initial={{ opacity: 0, y: -15 }}
+              initial={{ opacity: 0, y: -12 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              className={`max-w-3xl mx-auto mb-8 rounded-2xl border px-4 py-3 flex items-center gap-3 backdrop-blur-xl ${
-                isDark
-                  ? "bg-white/5 border-white/10 text-white/80"
-                  : "bg-white/70 border-slate-200 text-slate-700"
-              }`}
+              exit={{ opacity: 0, y: -12 }}
+              className={`mx-auto mb-6 flex max-w-3xl items-start gap-3 rounded-2xl border px-4 py-3 backdrop-blur-xl md:mb-8 ${isDark ? "border-white/10 bg-white/6 text-slate-200" : "border-slate-300/35 bg-[#f8fafc]/88 text-slate-700 shadow-sm"}`}
             >
               <LocateFixed
                 size={18}
-                className="text-cyan-400"
+                className={`mt-0.5 shrink-0 ${isDark ? "text-cyan-400" : "text-blue-600"}`}
               />
-
-              <span>{locationMessage}</span>
+              <span className="text-sm leading-relaxed">{locationMessage}</span>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* ===================================== */}
-        {/* LOADING */}
-        {/* ===================================== */}
-
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
           {loading && (
             <motion.div
+              key="loading"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex flex-col items-center justify-center h-[50vh]"
+              className="flex min-h-[48vh] flex-col items-center justify-center px-4"
             >
-              <div className="relative w-28 h-28">
-                <div className="absolute inset-0 border-4 border-cyan-400/10 rounded-full"></div>
-
-                <div className="absolute inset-0 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
-
-                <Cloud className="absolute inset-0 m-auto w-10 h-10 text-cyan-400 animate-pulse" />
+              <div
+                className={`relative flex h-36 w-36 items-center justify-center rounded-3xl border backdrop-blur-2xl ${isDark ? "border-white/10 bg-white/5" : "border-slate-300/30 bg-[#f8fafc]/90 shadow-lg"}`}
+              >
+                <div className="absolute inset-3 rounded-2xl border-2 border-cyan-400/15" />
+                <div className="absolute inset-3 rounded-2xl border-2 border-t-cyan-400 border-r-transparent border-b-transparent border-l-transparent animate-spin" />
+                <Cloud
+                  className={`relative h-11 w-11 ${isDark ? "text-cyan-400" : "text-blue-600"} animate-pulse`}
+                />
               </div>
-
-              <p className="mt-6 tracking-[0.3em] text-cyan-400 text-xs font-black uppercase">
-                Loading Weather...
+              <p
+                className={`mt-8 text-xs font-black uppercase tracking-[0.35em] ${isDark ? "text-cyan-300/90" : "text-blue-700"}`}
+              >
+                Syncing atmosphere…
+              </p>
+              <p
+                className={`mt-2 text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}
+              >
+                Fetching live conditions for you
               </p>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* ===================================== */}
-        {/* ERROR */}
-        {/* ===================================== */}
-
         {!loading && error && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="max-w-md mx-auto text-center rounded-[2rem] border border-red-500/20 bg-red-500/10 p-10 backdrop-blur-2xl"
+            className={`mx-auto max-w-md rounded-3xl border p-8 text-center backdrop-blur-2xl ${isDark ? "border-red-400/25 bg-red-950/40 text-red-100" : "border-red-300/40 bg-[#fef2f2]/95 text-red-900 shadow-md"}`}
           >
-            <div className="text-5xl mb-5">🌩️</div>
-
-            <h2 className="text-2xl font-black text-red-400 mb-3">
-              Weather Error
-            </h2>
-
-            <p className="text-red-300/80">
+            <div className="mb-4 text-4xl">🌩️</div>
+            <h2 className="mb-2 text-xl font-black">Couldn’t load weather</h2>
+            <p className={`text-sm leading-relaxed ${isDark ? "text-red-200/85" : "text-red-800/90"}`}>
               {error}
             </p>
           </motion.div>
         )}
-
-        {/* ===================================== */}
-        {/* WEATHER PAGE */}
-        {/* ===================================== */}
 
         {!loading &&
           !error &&
@@ -410,40 +371,29 @@ export default function App() {
           forecastData && (
             <motion.div
               key={weatherData.name}
-              initial={{ opacity: 0, y: 35 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
             >
-              {/* FAVORITE BUTTON */}
-              <div className="flex justify-end mb-5">
+              <div className="mb-5 flex justify-end">
                 <motion.button
-                  whileHover={{ scale: 1.08 }}
-                  whileTap={{ scale: 0.92 }}
+                  type="button"
+                  whileHover={{ scale: 1.06 }}
+                  whileTap={{ scale: 0.94 }}
                   onClick={() =>
-                    handleToggleFavorite(
-                      weatherData.name
-                    )
+                    handleToggleFavorite(weatherData.name)
                   }
-                  className={`p-4 rounded-full border backdrop-blur-xl transition-all ${
-                    isFavorite
-                      ? "bg-yellow-400/20 border-yellow-400/40 text-yellow-400"
-                      : isDark
-                      ? "bg-white/5 border-white/10 text-white/50"
-                      : "bg-white/60 border-slate-200 text-slate-500"
-                  }`}
+                  className={`rounded-full border p-3.5 backdrop-blur-xl transition-all ${isFavorite ? "border-amber-400/45 bg-amber-400/15 text-amber-300 shadow-lg shadow-amber-500/10" : isDark ? "border-white/10 bg-white/6 text-slate-400 hover:border-white/20 hover:text-slate-200" : "border-slate-300/40 bg-[#f8fafc]/90 text-slate-500 hover:border-amber-300/50 hover:text-amber-700"}`}
                 >
                   <Star
                     size={22}
                     fill={
-                      isFavorite
-                        ? "currentColor"
-                        : "none"
+                      isFavorite ? "currentColor" : "none"
                     }
                   />
                 </motion.button>
               </div>
 
-              {/* MAIN WEATHER UI */}
               <WeatherPage
                 weatherData={{
                   current: weatherData,
@@ -454,26 +404,24 @@ export default function App() {
             </motion.div>
           )}
 
-        {/* ===================================== */}
-        {/* EMPTY STATE */}
-        {/* ===================================== */}
-
         {!loading &&
           !error &&
           !weatherData && (
-            <div className="h-[40vh] flex flex-col items-center justify-center">
-              <Cloud className="w-20 h-20 text-cyan-400/30 mb-4" />
-
-              <p
-                className={`text-lg font-bold ${
-                  isDark
-                    ? "text-white/40"
-                    : "text-slate-500"
-                }`}
-              >
-                Search a city to view weather
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`mx-auto flex min-h-[38vh] max-w-lg flex-col items-center justify-center rounded-3xl border px-8 py-12 text-center backdrop-blur-2xl ${isDark ? "border-white/10 bg-white/5 text-slate-300" : "border-slate-300/35 bg-[#f8fafc]/92 text-slate-600 shadow-md"}`}
+            >
+              <Cloud
+                className={`mb-5 h-16 w-16 ${isDark ? "text-cyan-500/40" : "text-blue-500/45"}`}
+              />
+              <p className={`text-lg font-bold ${isDark ? "text-slate-100" : "text-slate-800"}`}>
+                No weather data yet
               </p>
-            </div>
+              <p className={`mt-2 text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                Search a city or use your current location to see the full dashboard.
+              </p>
+            </motion.div>
           )}
       </div>
     </div>

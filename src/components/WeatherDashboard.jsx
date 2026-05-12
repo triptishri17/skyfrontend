@@ -162,90 +162,107 @@ const resolveWeatherType = (mainWeather = "", isNight = false) => {
 const getWeatherPalette = (weatherType, theme) => {
   const isDark = theme === "dark";
 
+  const cardDark = "bg-white/[0.08] border-white/10 backdrop-blur-xl";
+  const cardLight =
+    "bg-[#f8fafc]/90 border-[rgba(148,163,184,0.22)] backdrop-blur-xl shadow-[0_12px_40px_-14px_rgba(15,23,42,0.1)]";
+  const hoverDark = "hover:bg-white/[0.12]";
+  const hoverLight = "hover:bg-[#eef4ff]/95";
+
   const palettes = {
     night: {
-      bg: isDark ? "from-[#020617] via-[#111827] to-[#1e1b4b]" : "from-[#dbeafe] via-[#bfdbfe] to-[#c7d2fe]",
+      bg: isDark ? "from-[#020617] via-[#111827] to-[#1e1b4b]" : "from-[#dbeafe] via-[#e0f2fe] to-[#eef4ff]",
       textPrimary: isDark ? "text-white" : "text-slate-900",
-      textSecondary: isDark ? "text-slate-300/80" : "text-slate-700/80",
-      card: isDark ? "bg-white/8 border-white/15" : "bg-white/65 border-white/70",
-      cardHover: isDark ? "hover:bg-white/15" : "hover:bg-white/80",
+      textSecondary: isDark ? "text-slate-300/80" : "text-slate-600",
+      card: isDark ? cardDark : cardLight,
+      cardHover: isDark ? hoverDark : hoverLight,
       glow: isDark ? "shadow-[0_0_80px_rgba(99,102,241,0.35)]" : "shadow-[0_0_60px_rgba(129,140,248,0.28)]",
       accent: "#93c5fd",
       atmosphere: <NightStars />,
     },
     clear: {
-      bg: isDark ? "from-[#1e3a8a] via-[#0ea5e9] to-[#f59e0b]" : "from-[#fde68a] via-[#7dd3fc] to-[#fb923c]",
+      bg: isDark ? "from-[#1e3a8a] via-[#0ea5e9] to-[#f59e0b]" : "from-[#fde68a] via-[#bae6fd] to-[#f0f9ff]",
       textPrimary: isDark ? "text-white" : "text-slate-900",
-      textSecondary: isDark ? "text-white/70" : "text-slate-700/80",
-      card: isDark ? "bg-white/12 border-white/20" : "bg-white/70 border-white/80",
-      cardHover: isDark ? "hover:bg-white/20" : "hover:bg-white/85",
+      textSecondary: isDark ? "text-white/70" : "text-slate-600",
+      card: isDark ? cardDark : cardLight,
+      cardHover: isDark ? hoverDark : hoverLight,
       glow: isDark ? "shadow-[0_0_80px_rgba(251,191,36,0.32)]" : "shadow-[0_0_70px_rgba(251,146,60,0.35)]",
       accent: "#f59e0b",
       atmosphere: <SunnyAtmosphere />,
     },
     cloud: {
-      bg: isDark ? "from-[#0f172a] via-[#334155] to-[#475569]" : "from-[#e2e8f0] via-[#cbd5e1] to-[#94a3b8]",
+      bg: isDark ? "from-[#0f172a] via-[#334155] to-[#475569]" : "from-[#e2e8f0] via-[#cbd5e1] to-[#f0f9ff]",
       textPrimary: isDark ? "text-white" : "text-slate-900",
-      textSecondary: isDark ? "text-slate-300/85" : "text-slate-700/85",
-      card: isDark ? "bg-white/10 border-white/15" : "bg-white/70 border-white/85",
-      cardHover: isDark ? "hover:bg-white/15" : "hover:bg-white/85",
+      textSecondary: isDark ? "text-slate-300/85" : "text-slate-600",
+      card: isDark ? cardDark : cardLight,
+      cardHover: isDark ? hoverDark : hoverLight,
       glow: isDark ? "shadow-[0_0_70px_rgba(148,163,184,0.28)]" : "shadow-[0_0_55px_rgba(100,116,139,0.28)]",
       accent: "#94a3b8",
       atmosphere: <CloudyAtmosphere />,
     },
     rain: {
-      bg: isDark ? "from-[#020617] via-[#0f172a] to-[#1d4ed8]" : "from-[#dbeafe] via-[#93c5fd] to-[#60a5fa]",
+      bg: isDark ? "from-[#020617] via-[#0f172a] to-[#1d4ed8]" : "from-[#bfdbfe] via-[#dbeafe] to-[#f0f9ff]",
       textPrimary: isDark ? "text-white" : "text-slate-900",
-      textSecondary: isDark ? "text-cyan-100/80" : "text-slate-700/85",
-      card: isDark ? "bg-blue-950/35 border-blue-200/20" : "bg-white/72 border-blue-100/80",
-      cardHover: isDark ? "hover:bg-blue-900/50" : "hover:bg-white/88",
+      textSecondary: isDark ? "text-cyan-100/80" : "text-slate-600",
+      card: isDark ? "bg-blue-950/40 border-cyan-300/15 backdrop-blur-xl" : cardLight,
+      cardHover: isDark ? "hover:bg-blue-900/55" : hoverLight,
       glow: isDark ? "shadow-[0_0_80px_rgba(59,130,246,0.35)]" : "shadow-[0_0_60px_rgba(59,130,246,0.25)]",
       accent: "#38bdf8",
       atmosphere: <RainyAtmosphere />,
     },
     storm: {
-      bg: isDark ? "from-[#1e1b4b] via-[#312e81] to-[#0f172a]" : "from-[#ddd6fe] via-[#c4b5fd] to-[#a5b4fc]",
+      bg: isDark ? "from-[#1e1b4b] via-[#312e81] to-[#0f172a]" : "from-[#ddd6fe] via-[#e9d5ff] to-[#f0f9ff]",
       textPrimary: isDark ? "text-white" : "text-slate-900",
-      textSecondary: isDark ? "text-violet-200/80" : "text-slate-700/85",
-      card: isDark ? "bg-violet-950/30 border-violet-200/20" : "bg-white/72 border-violet-100/80",
-      cardHover: isDark ? "hover:bg-violet-900/48" : "hover:bg-white/86",
+      textSecondary: isDark ? "text-violet-200/80" : "text-slate-600",
+      card: isDark ? "bg-violet-950/35 border-violet-200/20 backdrop-blur-xl" : cardLight,
+      cardHover: isDark ? "hover:bg-violet-900/50" : hoverLight,
       glow: isDark ? "shadow-[0_0_85px_rgba(139,92,246,0.35)]" : "shadow-[0_0_62px_rgba(139,92,246,0.28)]",
       accent: "#a78bfa",
       atmosphere: <RainyAtmosphere withLightning />,
     },
     snow: {
-      bg: isDark ? "from-[#0f172a] via-[#1e3a8a] to-[#334155]" : "from-[#ecfeff] via-[#dbeafe] to-[#e2e8f0]",
+      bg: isDark ? "from-[#0f172a] via-[#1e3a8a] to-[#334155]" : "from-[#ecfeff] via-[#e0f2fe] to-[#f8fafc]",
       textPrimary: isDark ? "text-white" : "text-slate-900",
-      textSecondary: isDark ? "text-cyan-100/80" : "text-slate-700/80",
-      card: isDark ? "bg-cyan-950/24 border-cyan-100/25" : "bg-white/80 border-white/90",
-      cardHover: isDark ? "hover:bg-cyan-900/40" : "hover:bg-white/94",
+      textSecondary: isDark ? "text-cyan-100/80" : "text-slate-600",
+      card: isDark ? "bg-cyan-950/30 border-cyan-100/20 backdrop-blur-xl" : cardLight,
+      cardHover: isDark ? "hover:bg-cyan-900/45" : hoverLight,
       glow: isDark ? "shadow-[0_0_84px_rgba(186,230,253,0.32)]" : "shadow-[0_0_62px_rgba(147,197,253,0.28)]",
       accent: "#bae6fd",
       atmosphere: <SnowAtmosphere />,
     },
     fog: {
-      bg: isDark ? "from-[#111827] via-[#374151] to-[#1f2937]" : "from-[#e5e7eb] via-[#d1d5db] to-[#9ca3af]",
+      bg: isDark ? "from-[#111827] via-[#374151] to-[#1f2937]" : "from-[#e5e7eb] via-[#dbeafe] to-[#f0f9ff]",
       textPrimary: isDark ? "text-white" : "text-slate-900",
-      textSecondary: isDark ? "text-slate-300/80" : "text-slate-700/80",
-      card: isDark ? "bg-slate-900/35 border-slate-200/20" : "bg-white/72 border-white/85",
-      cardHover: isDark ? "hover:bg-slate-800/45" : "hover:bg-white/88",
+      textSecondary: isDark ? "text-slate-300/80" : "text-slate-600",
+      card: isDark ? "bg-slate-900/40 border-slate-200/15 backdrop-blur-xl" : cardLight,
+      cardHover: isDark ? "hover:bg-slate-800/48" : hoverLight,
       glow: isDark ? "shadow-[0_0_75px_rgba(148,163,184,0.3)]" : "shadow-[0_0_58px_rgba(148,163,184,0.25)]",
       accent: "#cbd5e1",
       atmosphere: <FogAtmosphere />,
     },
     default: {
-      bg: isDark ? "from-[#0f172a] via-[#1e293b] to-[#312e81]" : "from-[#e0e7ff] via-[#c7d2fe] to-[#bfdbfe]",
+      bg: isDark ? "from-[#0f172a] via-[#1e293b] to-[#312e81]" : "from-[#e0e7ff] via-[#dbeafe] to-[#f0f9ff]",
       textPrimary: isDark ? "text-white" : "text-slate-900",
-      textSecondary: isDark ? "text-white/75" : "text-slate-700/80",
-      card: isDark ? "bg-white/10 border-white/15" : "bg-white/75 border-white/90",
-      cardHover: isDark ? "hover:bg-white/16" : "hover:bg-white/90",
+      textSecondary: isDark ? "text-white/75" : "text-slate-600",
+      card: isDark ? cardDark : cardLight,
+      cardHover: isDark ? hoverDark : hoverLight,
       glow: isDark ? "shadow-[0_0_75px_rgba(129,140,248,0.32)]" : "shadow-[0_0_58px_rgba(96,165,250,0.28)]",
       accent: "#60a5fa",
       atmosphere: null,
     },
   };
 
-  return palettes[weatherType] || palettes.default;
+  const base = palettes[weatherType] || palettes.default;
+
+  return {
+    ...base,
+    chartTick: isDark ? "rgba(248, 250, 252, 0.78)" : "#475569",
+    dividerTop: isDark ? "border-t border-white/12" : "border-t border-slate-300/25",
+    heroLeftRule: isDark ? "md:border-l md:border-white/15" : "md:border-l md:border-slate-300/35",
+    dotStroke: isDark ? "#ffffff" : "#64748b",
+    activeForecast: isDark
+      ? "bg-cyan-500/15 text-white border-cyan-400/35 ring-2 ring-cyan-400/25 shadow-xl backdrop-blur-xl"
+      : "bg-[#eef4ff] text-slate-900 border-blue-500/30 ring-2 ring-blue-500/25 shadow-md backdrop-blur-xl",
+  };
 };
 
 const CustomTooltip = ({ active, payload, label, palette }) => {
@@ -345,7 +362,7 @@ export default function WeatherDashboard({ weatherData, theme }) {
                   {Math.round(selectedDay?.main?.temp ?? currentData?.main?.temp ?? 0)}
                   <span className="text-[2.6rem] md:text-[3.5rem] opacity-35 align-top">°</span>
                 </h2>
-                <div className="pb-4 md:border-l md:pl-5 md:border-white/20">
+                <div className={`pb-4 md:pl-5 ${palette.heroLeftRule}`}>
                   <p className={`text-2xl md:text-4xl uppercase tracking-wider font-light ${palette.textPrimary}`}>{selectedDay?.weather?.[0]?.main || "Weather"}</p>
                   <p className={`mt-1 text-sm font-bold uppercase tracking-[0.2em] ${palette.textSecondary}`}>
                     {selectedDay?.dt ? new Date(selectedDay.dt * 1000).toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" }) : ""}
@@ -383,7 +400,7 @@ export default function WeatherDashboard({ weatherData, theme }) {
             </motion.div>
           </div>
 
-          <div className="border-t border-white/15 p-5 md:p-8">
+          <div className={`p-5 md:p-8 ${palette.dividerTop}`}>
             <div className="flex overflow-x-auto gap-3 md:gap-4 pb-1 no-scrollbar">
               {dailyForecasts.map((day, idx) => {
                 const isActive = safeSelectedDayIdx === idx;
@@ -395,7 +412,7 @@ export default function WeatherDashboard({ weatherData, theme }) {
                     whileTap={{ scale: 0.97 }}
                     className={`flex-shrink-0 w-32 md:w-36 rounded-3xl border px-4 py-5 transition-all ${
                       isActive
-                        ? `bg-white/85 text-slate-900 border-white ring-2 ring-offset-1 ring-offset-transparent shadow-xl`
+                        ? palette.activeForecast
                         : `${palette.card} ${palette.cardHover} ${palette.textPrimary}`
                     }`}
                   >
@@ -430,7 +447,7 @@ export default function WeatherDashboard({ weatherData, theme }) {
                         <stop offset="95%" stopColor={palette.accent} stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{ fill: "rgba(255,255,255,0.75)", fontSize: 11, fontWeight: 700 }} dy={16} />
+                    <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{ fill: palette.chartTick, fontSize: 11, fontWeight: 700 }} dy={16} />
                     <YAxis hide domain={["auto", "auto"]} />
                     <Tooltip content={<CustomTooltip palette={palette} />} />
                     <Area
@@ -441,8 +458,8 @@ export default function WeatherDashboard({ weatherData, theme }) {
                       fillOpacity={1}
                       fill="url(#weatherCurveFill)"
                       animationDuration={1000}
-                      dot={<Dot r={4} fill={palette.accent} stroke="#ffffff" strokeWidth={2} />}
-                      activeDot={{ r: 8, fill: palette.accent, stroke: "#fff", strokeWidth: 2 }}
+                      dot={<Dot r={4} fill={palette.accent} stroke={palette.dotStroke} strokeWidth={2} />}
+                      activeDot={{ r: 8, fill: palette.accent, stroke: palette.dotStroke, strokeWidth: 2 }}
                     />
                   </AreaChart>
                 </ResponsiveContainer>
